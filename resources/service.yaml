@@ -1,0 +1,14 @@
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: -proxy
+spec:
+  type: ClusterIP
+  selector: {}
+  ports:
+    - name: sentinel-proxy
+      port: 36379
+      targetPort: 36379
+      protocol: TCP

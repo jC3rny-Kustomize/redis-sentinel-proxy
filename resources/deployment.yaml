@@ -1,0 +1,50 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: -proxy
+spec:
+  selector: {}
+  template:
+    spec:
+      containers:
+        - name: sentinel-proxy
+          image: "patrickdk/redis-sentinel-proxy"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: DEBUG
+              value: "false"
+            - name: TIMEOUTMS
+              value: "2000"
+            - name: CHECKMS
+              value: "250"
+            - name: LISTEN
+              value: ":36379"
+            - name: REDIS_SERVICE_NAME
+              value: <REDIS_SERVICE_NAME>
+            - name: SENTINEL
+              value: $(REDIS_SERVICE_NAME).$(POD_NAMESPACE):26379
+            - name: MASTER
+              value: <REDIS_SENTINEL_MASTER>
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: <REDIS_SENTINEL_MASTER_PASSWORD>
+                  key: password
+          ports:
+            - name: sentinel-proxy
+              containerPort: 36379
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "0.015"
+              memory: 32Mi
+            limits:
+              cpu: "0.03"
+              memory: 64Mi
+            

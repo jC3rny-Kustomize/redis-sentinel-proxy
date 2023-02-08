@@ -1,0 +1,30 @@
+---
+
+apiVersion: builtin
+kind: LabelTransformer
+metadata:
+  name: redis-sentinel-proxy
+
+labels:
+  app.kubernetes.io/name: redis
+  app.kubernetes.io/component: sentinel-proxy
+
+fieldSpecs:
+  - path: metadata/labels
+    create: true
+  
+  - kind: Service
+    path: spec/selector
+    create: true
+    
+  - kind: Deployment
+    path: spec/selector/matchLabels
+    create: true
+    
+  - kind: Deployment
+    path: spec/template/metadata/labels
+    create: true
+
+  - kind: PodDisruptionBudget
+    path: spec/selector/matchLabels
+    create: true
