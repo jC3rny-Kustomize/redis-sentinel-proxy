@@ -13,6 +13,11 @@ transformers:
   - ./transformers/label.yaml
 
 
+replicas:
+  - name: -proxy
+    count: 3
+
+
 images:
   - name: patrickdk/redis-sentinel-proxy
     # newName: patrickdk/redis-sentinel-proxy

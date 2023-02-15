@@ -1,0 +1,48 @@
+---
+
+# releaseName
+source:
+  version: builtin
+  kind: HelmChartInflationGenerator
+  name: redis-ha
+
+  fieldPath: releaseName
+
+targets:
+
+  # Service
+  - select:
+      version: v1
+      kind: Service
+      name: -proxy
+    options:
+      create: true
+    fieldPaths:
+      - metadata.labels.[app.kubernetes.io/instance]
+      - spec.selector.[app.kubernetes.io/instance]
+  
+  # Deployment
+  - select:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: -proxy
+    options:
+      create: true
+    fieldPaths:
+      - metadata.labels.[app.kubernetes.io/instance]
+      - spec.selector.matchLabels.[app.kubernetes.io/instance]
+      - spec.template.metadata.labels.[app.kubernetes.io/instance]
+      - spec.template.spec.containers.[name=sentinel-proxy].env.[name=REDIS_SERVICE_NAME].value
+  
+  # PodDisruptionBudget
+  - select:
+      group: policy
+      version: v1
+      kind: PodDisruptionBudget
+      name: -proxy-pdb
+    options:
+      create: true
+    fieldPaths:
+      - metadata.labels.[app.kubernetes.io/instance]
+      - spec.selector.matchLabels.[app.kubernetes.io/instance]

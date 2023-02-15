@@ -1,0 +1,19 @@
+---
+
+# releaseName
+source:
+  version: builtin
+  kind: HelmChartInflationGenerator
+  name: redis-ha
+
+  fieldPath: releaseName
+
+targets:
+
+  # PrefixSuffixTransformer
+  - select:
+      version: builtin
+      kind: PrefixSuffixTransformer
+      name: redis-sentinel-proxy-prefix
+    fieldPaths:
+      - prefix

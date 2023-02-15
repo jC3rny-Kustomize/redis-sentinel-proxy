@@ -1,0 +1,30 @@
+---
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base/deployment
+
+
+patchesStrategicMerge:
+  - |-
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: -proxy
+    spec:
+      selector:
+        matchLabels: {}
+      template:
+        metadata: {}
+        spec:
+          containers:
+            - name: sentinel-proxy
+              env:
+                - name: PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: password
+                      name: -redis-password-sealed
+

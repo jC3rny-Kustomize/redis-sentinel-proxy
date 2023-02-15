@@ -1,0 +1,20 @@
+---
+
+# valuesInline.sentinel.masterSet
+source:
+  version: builtin
+  kind: HelmChartInflationGenerator
+  name: redis-ha
+
+  fieldPath: valuesInline.sentinel.masterSet
+
+targets:
+
+  # Deployment
+  - select:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: -proxy
+    fieldPaths:
+      - spec.template.spec.containers.[name=sentinel-proxy].env.[name=MASTER].value
